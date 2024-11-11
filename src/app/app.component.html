@@ -1,39 +1,65 @@
-<div class="col-12 text-center text-info mt-5 mb-3 fs-5">
-  APP TO DO LIST
-</div>
-<div class="container ">
-  <div class="row p">
-    <div class="col">
-      <input type="text" [(ngModel)]="newTask" placeholder="INSEART THE TASK" class="form-control" id="up">
-    </div>
-    <div class="col">
-      <button  class="btn btn-primary" (click)="addTask()" id="mode">ADD TASK</button>
-    </div>
-  </div>
-</div>
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterOutlet } from '@angular/router';
 
-
-<div class="container">
-<table class="table"  *ngIf="isAvilaple">
-  <thead>
-    <tr>
-      <th class="col-8">TASK</th>
-      <th class="col-2">UPDATE</th>
-      <th class="col-2">DELATE</th>
-    </tr>
-  </thead>
-  <tbody >
-    @for(i of task ; track $index){
-      <tr>
-        <td>{{i}}</td>
-        <td><button  type="button" class="btn btn-primary" (click)="update($index)" id="UP" >UPDATE</button></td>
-  
-        <td><button type="button"  class="btn btn-danger" (click)="delate($index)">DELETE</button></td>
-  
-      </tr>
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet,CommonModule,FormsModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent implements OnInit{
+  title = 'to-do-list';
+  isAvilaple = false;
+  task:string[]= []
+  newTask:string= ''
+  temp :any ;
+  mode = 'add';
+  ngOnInit(): void {
+    this.getTask()
+  }
+  getTask(){
+    if('task' in localStorage){
+      this.task = JSON.parse(localStorage.getItem('task')!)
+      if(this.task.length>0){
+        this.isAvilaple = true
+      }
     }
-    
-  </tbody>
-</table>
-</div>
-<router-outlet />
+  }
+  addTask(){
+    if (this.mode == 'add'){
+      if(this.newTask !== ''){
+        this.task.push(this.newTask);
+        this.newTask = '';
+      }
+        localStorage.setItem('task',JSON.stringify(this.task))
+        this.isAvilaple = true;
+    }else{
+      this.task[this.temp] = this.newTask ;
+      localStorage.setItem('task',JSON.stringify(this.task))
+      this.newTask = '';
+      let modes:any = document.getElementById('mode');
+      modes.innerHTML = 'ADD TASK' ;
+    }
+  }
+  delate(index:number){
+    this.task.splice(index,1)
+    if(this.task.length  === 0){
+      this.isAvilaple = false
+    }
+    localStorage.setItem('task',JSON.stringify(this.task))
+  }
+  update(index:number){
+    this.mode = 'update'    
+    if (this.mode == 'update'){
+      let updates:any = document.getElementById('up');
+      updates.value =  this.task[index];
+      this.temp = index ;
+      let modes:any = document.getElementById('mode');
+      modes.innerHTML = 'UPDATE' ;
+    }
+  }
+
+}
