@@ -1,5 +1,11 @@
 .p{
     margin-top: 50px;
-    margin-left: 200px;
+    display: flex;
+    justify-content: center;
     margin-bottom: 30px;
+}
+
+input{
+    width: 75%;
+    margin: auto;
 }
