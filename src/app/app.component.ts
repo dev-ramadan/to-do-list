@@ -39,6 +39,9 @@ export class AppComponent implements OnInit{
     }else{
       this.task[this.temp] = this.newTask ;
       localStorage.setItem('task',JSON.stringify(this.task))
+      this.newTask = '';
+      let modes:any = document.getElementById('mode');
+      modes.innerHTML = 'ADD TASK' ;
     }
   }
   delate(index:number){
@@ -50,11 +53,13 @@ export class AppComponent implements OnInit{
   }
   update(index:number){
     this.mode = 'update'    
-    let updates:any = document.getElementById('up');
-    updates.value =  this.task[index];
-    this.temp = index ;
-    let mode:any = document.getElementById('mode');
-    mode.innerHTML = 'UPDATE' ;
+    if (this.mode == 'update'){
+      let updates:any = document.getElementById('up');
+      updates.value =  this.task[index];
+      this.temp = index ;
+      let modes:any = document.getElementById('mode');
+      modes.innerHTML = 'UPDATE' ;
+    }
   }
 
 }
